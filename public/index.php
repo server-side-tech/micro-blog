@@ -31,8 +31,12 @@ function loadMessages($dbConnection){
     $ul = '<ul>';
     $result = dbGetAllMessages($dbConnection);
     while($row = dbFetchRow($result)){
-        $ul .= "<li><p>" . $row["message_text"]. "</p><hr></li>";
+        $ul .= "<li><p>@".$row["time_stamp"]." ";
+        $ul .= $row["user_name"]." wrote:"."<br>";
+        $ul .= $row["message_text"]. "</p><hr></li>";
     }
+    
+    dbFreeResult($result);
     $ul .='</ul>';
     
     return $ul;
