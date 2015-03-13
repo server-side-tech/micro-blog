@@ -86,5 +86,5 @@ function dbFetchRow($result){
 }
 
 function dbFreeResult($result){
-    mysqli_free_result($result);
+//    mysqli_free_result($result);
 }

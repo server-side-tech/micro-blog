@@ -41,9 +41,9 @@ html,body{
 .col-container{
     width: 100%;
 }
-/*There are three columns in the header section, they contain back button, app title and
-Menu Navigation button. */
 
+/* Layout of the header for landing form. It contains two columns one for the h1 title and another
+div container that will contain sigin/login buttons*/
 .col-2{
     float: left;
     width: 70%;
@@ -54,6 +54,7 @@ Menu Navigation button. */
     padding-right: 5%;
 }
 
+/* Layout of sigin button, "or" text and login button*/
 .col-3{
     float: left;
     width: 100%;
@@ -85,23 +86,63 @@ Menu Navigation button. */
     }
 }
 
-.col-3-login{
+/* Layout of logout form that contains welcome message, header title and logout button.*/
+.col-3-logout{
     float: left;
     width: 20%;
 }
 
-.col-3-login:first-child{
+.col-3-logout:first-child{
     padding-left: 5%;
 }
-.col-3-login:nth-child(2){
+.col-3-logout:nth-child(2){
     width: 60%;
 }
-.col-3-login:last-child{
+.col-3-logout:last-child{
     padding-right: 5%;
 }
-.col-3-login p{
+.col-3-logout p{
     text-align: left;
 }
+
+/* Layout of Login form that contains username,password and login button*/
+.col-3-sign-in{
+    display: block;
+    width: 100%;
+}
+
+.col-3-sign-in label{
+    display: inline;
+}
+
+.col-3-sign-in input{
+    display: inline-block;
+}
+
+@media screen and (min-width: 800px){
+    .col-3-sign-in label{
+        display: block
+    }
+    
+    .col-3-sign-in{
+        float:left;
+        width: 40%    
+    }
+
+    .col-3-sign-in:first-child{
+        padding-left: 5%;
+    }
+
+    .col-3-sign-in:last-child{
+        width:20%;
+        padding-right: 5%;
+    }
+}
+
+.col-3-sign-in label{
+    color: hsl(69, 46%, 82%);
+}
+
 /* Common Form inputs/labels styles
 ===============================================================*/
 label,input{
@@ -139,7 +180,7 @@ form[name="cancel-form"]{
 }
 
 .mandatory{
- color: red;   
+ color: orange;   
 }
 
 .vertical-spacing{
@@ -218,12 +259,21 @@ ul li{
     margin: 0 auto;    
 }
 
-#mandatory-msg{
-    color:red;
+#mandatory-msg,
+label[for="sign-in"]{
+    color:orange;
     font-style: italic;
+}
+
+#mandatory-msg{
     font-size: 0.8rem;
     margin-bottom: 15px;
-        
+}
+
+label[for="sign-in"]{
+    font-size: 0.7rem;
+    max-width: 100%;
+    width: 100%;
 }
 
 #signup-error-msg{
@@ -239,6 +289,8 @@ footer{
     height: 90px;
     z-index: 10;
 }
+
+/* Layout of send form that is located in the footer. It contains text field and a button to post the message.*/
 .col-2-msg-send{
     float: left;
     width: 75%;
