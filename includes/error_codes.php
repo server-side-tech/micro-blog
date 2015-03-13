@@ -20,5 +20,3 @@ abstract class Status{
     const UPDATE_INFO_SUCCESS = 13;
 
 }
-?>
-

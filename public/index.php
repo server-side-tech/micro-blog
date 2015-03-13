@@ -1,23 +1,26 @@
 <?php
+session_start();
+
+require_once '../includes/utilities.php';
 require_once '../includes/head.php';
 require_once '../includes/database.php';
 
-function createHeader(){
+function createLandingForm(){
     return '<header class="col-container clearfix">
-                <div class="col-2">
-                    <h1 class="vertical-alignment">Micro Blog</h1>
+                <div class="col-2 vertical-alignment">
+                    <h1>Micro Blog</h1>
                 </div>
-                <div class="col-2">
+                <div class="col-2 vertical-alignment">
                     <div class="col-container clearfix">
-                        <div class="col-3 vertical-alignment">
+                        <div class="col-3">
                             <form name="signup-form" action="signup.php" method="post">
                                 <input type="submit" name="sign-up" value="Sign up">
                             </form>                        
                         </div>
-                        <div class="col-3 vertical-alignment">
+                        <div class="col-3">
                             <p>or</p>
                         </div>
-                        <div class="col-3 vertical-alignment">
+                        <div class="col-3">
                             <form name="login-form" action="index.php" method="post">
                                 <input type="submit" name="log-in" value="Log in">
                             </form>
@@ -25,6 +28,32 @@ function createHeader(){
                     </div>
                 </div>
             </header>';
+}
+
+function createLogoutForm(){
+    return '<header class="col-container clearfix">
+                <div class="col-2 vertical-alignment">
+                    <h1>Micro Blog</h1>
+                </div>
+                <div class="col-2 vertical-alignment">
+                            <form name="logout-form" action="index.php" method="post">
+                                <input type="submit" name="logout" value="Log out">
+                            </form>                        
+                </div>
+            </header>';    
+}
+
+function createSendMessageForm(){
+    return '<footer>
+                <form class="vertical-alignment col-container clearfix" name="send-msg-form" action="index.php" method="post">
+                    <div class="col-2 vertical-alignment" >
+                        <input type="text" name="txt-input-msg" required>
+                    </div>
+                    <div class="col-2 vertical-alignment" >
+                        <input type="submit" name="send-msg-form" value="Post Message">
+                    </div>            
+                </form>                        
+            </footer>';    
 }
 
 function loadMessages($dbConnection){
@@ -42,9 +71,39 @@ function loadMessages($dbConnection){
     return $ul;
 }
 
+function isUserLoggedIn(){
+    return isset($_SESSION["myName"]);
+}
+
+function isLogoutClicked(){
+    return isset($_POST["logout"]);
+}
+
+function isPostMessageClicked(){
+    return isset($_POST["send-msg-form"]);
+}
+
 $dbConnection = dbConnect();
 $head   = createHead("Micro Blog");
-$header = createHeader();
+
+if(isUserLoggedIn()){ /* User has signed up or logged in successfully*/
+    if(isLogoutClicked()){
+        session_destroy(); /* destroy user's session */
+        $header = createLandingForm();
+        $footer = "";
+    }else{
+        $header = createLogoutForm(); /* Display logout form in the header*/
+        $footer = createSendMessageForm(); /* Display send message form in the footer*/
+        if (isPostMessageClicked()){
+                $userId = $_SESSION["myId"];
+                $newMsg = $_POST["txt-input-msg"];
+                dbInsertNewMessage($dbConnection,$userId,$newMsg);
+        }        
+    }
+}else{ /* User neither signed up nor logged in*/
+    $header = createLandingForm();
+    $footer = "";
+}
 
 $messagesSection  = '<section id="messages-section">';
 $messagesSection .= loadMessages($dbConnection);
@@ -53,13 +112,10 @@ $messagesSection .= '</section>';
 dbClose($dbConnection);
 ?>
 
-<?php
-echo $head;
-?>
+<?=$head?>
 <body>
-<?php
-echo $header;
-echo $messagesSection;
-?>    
+<?=$header?>
+<?=$messagesSection?>
+<?=$footer?>
 </body>
 </html>
