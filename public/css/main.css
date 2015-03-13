@@ -165,11 +165,10 @@ input[type="password"]{
     border: 1px solid hsl(67, 10%, 36%);
 }
 
-input[type="text"]:focus,
-input[type="text"]:active,
-input[type="password"]:focus,
-input[type="password"]:active{
-    outline-color: hsl(67, 10%, 36%);
+input:focus,
+input:active{
+    /*outline-color: hsl(67, 10%, 36%);*/
+    outline-color: orange;
     outline-width: 4px;
 }
 
@@ -205,6 +204,11 @@ footer form input[type="submit"]{
     width: 100%;
 }
 
+/*header form input:focus,
+header form input:active{
+    outline-color: orange;
+}*/
+
 header p,
 header h1{
     text-align: center;
@@ -229,7 +233,8 @@ header h1{
 
 #login-welcome-msg,
 #login-extra-msg{
-    color: hsl(60, 96%, 65%);
+    /*color: hsl(60, 96%, 65%);*/
+    color: orange;
 }
 
 /* Main Section/ Sign-up Section
@@ -308,7 +313,7 @@ footer form input[type="text"]{
     
 }
 
-footer form input[type="text"]:focus,
+/*footer form input[type="text"]:focus,
 footer form input[type="text"]:active{
         outline-color: hsl(60, 96%, 65%);
-}
+}*/

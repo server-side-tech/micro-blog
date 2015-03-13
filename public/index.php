@@ -59,12 +59,12 @@ function createSendMessageForm(){
             </footer>';    
 }
 
-function createSigninForm($username){
-    return '<header class="col-container clearfix">
+function createSigninForm(){
+    $form= '<header class="col-container clearfix">
                 <form name="signin-form" action="index.php" method="post">
                     <div class="col-3-sign-in">
                         <label for="username">username: <span class="mandatory">*</span></label>
-                        <input type="text" id="username" name="username" valu="'.$username.'" required>
+                        <input type="text" id="username" name="username" value="" required>
                     </div>
                     <div class="col-3-sign-in">
                         <label for="passowrd">password: <span class="mandatory">*</span></label>
@@ -76,6 +76,7 @@ function createSigninForm($username){
                     </div>
                 </form> 
             </header>';
+    return $form;
 }
 
 function loadMessages($pdo_link){
@@ -93,6 +94,28 @@ function loadMessages($pdo_link){
     return $ul;
 }
 
+function validateUser($pdo_link, $username, $password){
+    /* Get user information from database. */
+    $credentials = dbGetUserCredentials($pdo_link, $username);
+    
+    if($credentials){
+        /* Encrypt input password */
+        $encryptedPassword = md5($password);
+        /* save user id into global varibale, it will be saved into session as a next step.
+         * I have to do so becacause I wanted this function to return only boolean and I
+         * I wanted to save another SQL query for the sake of user_id.*/
+        setUserId($credentials["user_id"]);
+        
+        /* Compare username and encrypted password */
+        return (($username == $credentials["saved_username"]) &&
+                ($encryptedPassword == $credentials["saved_password"]));
+        
+    }else{
+        return FALSE;
+    }
+    
+}
+
 function isUserLoggedIn(){
     return isset($_SESSION["myName"]);
 }
@@ -104,7 +127,7 @@ function isLoginClicked(){
 
 /* Check if login button in the login form is submitted or not*/
 function isSinginClicked(){
-    return isset($_POST["sig-in"]);
+    return isset($_POST["sign-in"]);
 }
 
 /* Check if logout botton in logout form is submitted or not*/
@@ -139,10 +162,24 @@ if(isUserLoggedIn()){ /* User has signed up or logged in successfully*/
     }
 }else{ /* User neither signed up nor logged in*/
     if(isLoginClicked()){ //login button in the landing form
-        $header = createSigninForm("");
+        $header = createSigninForm();
         $footer = "";        
     }else if(isSinginClicked()){ //login button in the login form
-        
+        $username = trim($_POST["username"]);
+        $password = $_POST["password"];
+        if(validateUser($pdo_link, $username, $password)){
+            $_SESSION['myId'] = getUserId();
+            $_SESSION['myName'] = $username;
+            
+            $header = createLogoutForm();
+            $footer = createSendMessageForm();
+            
+            resetUserId();
+
+        }else{ /* User has entered wrong login information, get back to landing form.*/
+            $header = createLandingForm();
+            $footer = "";           
+        }
     }else{
         $header = createLandingForm();
         $footer = "";

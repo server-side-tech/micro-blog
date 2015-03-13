@@ -70,14 +70,33 @@ function isUsernameExist($pdo_link,$username){
     $result = $pdo_link->prepare($query);
     
     $result->execute(array($username));
-    /* Check that result is not null and number of affected columns is zero. This indicates that user 
-     already exists.*/
+    /* Check that result is not null and number of affected rows is zero. This indicates that user 
+     does not exists.*/
     if($result && 0 == $result->rowCount()){ 
         /* User does not exist in the database. Next step is to add it to the database.*/
         return FALSE;
     }else{
         /* Username exists already in the database. */
         return TRUE;
+    }
+}
+
+function dbGetUserCredentials($pdo_link, $username){
+    $query  ="SELECT * FROM users WHERE user_name = ?";
+    $result = $pdo_link->prepare($query);
+    
+    $result->execute(array($username));
+    /* There must be only one entry in the database for the given user.*/
+    if($result && 1 == $result->rowCount()){
+        $row = dbFetchRow($result);
+        $savedUsername = $row["user_name"];
+        $savedPassword = $row["user_hash"];
+        $userId        = $row["user_id"];
+        return array("saved_username"=>$savedUsername,
+                     "saved_password"=>$savedPassword,
+                     "user_id"=>$userId);
+    }else{
+        return NULL;
     }
 }
 
