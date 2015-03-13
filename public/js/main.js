@@ -6,16 +6,19 @@ var microBlog = (function(){
     
     var isSendMessageBtnLoaded = function(){
          postBtn = document.querySelector('footer input[name="send-msg-form"]');
-         return postBtn;
+         return (null !== postBtn);
     }
     
     var onPageLoad = function(){
         /* Check width of the window and if user is inside Login-form
          * Set value of post message input appropriately.*/
-        if( isWideScreen() && isSendMessageBtnLoaded()){
-            postBtn.setAttribute("value","Post Message");
-        }else{
-            postBtn.setAttribute("value","Post");
+        if(isSendMessageBtnLoaded()){
+            console.log(postBtn);
+            if( isWideScreen()){
+                postBtn.setAttribute("value","Post Message");
+            }else{
+                postBtn.setAttribute("value","Post");
+            }
         }
     }
     

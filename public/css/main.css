@@ -198,7 +198,7 @@ header h1{
     position: absolute;
     top:90px;
     background-color: hsl(69, 46%, 82%);
-    height: 100%;
+    min-height: 100%;
     margin: 0 auto;
     z-index: 1;
     width: 100%;

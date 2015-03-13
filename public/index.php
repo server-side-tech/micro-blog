@@ -59,9 +59,9 @@ function createSendMessageForm(){
             </footer>';    
 }
 
-function loadMessages($dbConnection){
+function loadMessages($pdo_link){
     $ul = '<ul>';
-    $result = dbGetAllMessages($dbConnection);
+    $result = dbGetAllMessages($pdo_link);
     while($row = dbFetchRow($result)){
         $ul .= "<li><p>@".$row["time_stamp"]." ";
         $ul .= $row["user_name"]." wrote:"."<br>";
@@ -86,7 +86,7 @@ function isPostMessageClicked(){
     return isset($_POST["send-msg-form"]);
 }
 
-$dbConnection = dbConnect();
+$pdo_link = dbConnect();
 $head   = createHead("Micro Blog");
 
 if(isUserLoggedIn()){ /* User has signed up or logged in successfully*/
@@ -100,7 +100,7 @@ if(isUserLoggedIn()){ /* User has signed up or logged in successfully*/
         if (isPostMessageClicked()){
                 $userId = $_SESSION["myId"];
                 $newMsg = $_POST["txt-input-msg"];
-                dbInsertNewMessage($dbConnection,$userId,$newMsg);
+                dbInsertNewMessage($pdo_link,$userId,$newMsg);
         }        
     }
 }else{ /* User neither signed up nor logged in*/
@@ -109,10 +109,10 @@ if(isUserLoggedIn()){ /* User has signed up or logged in successfully*/
 }
 
 $messagesSection  = '<section id="messages-section">';
-$messagesSection .= loadMessages($dbConnection);
+$messagesSection .= loadMessages($pdo_link);
 $messagesSection .= '</section>';
 
-dbClose($dbConnection);
+dbClose($pdo_link);
 ?>
 
 <?=$head?>
