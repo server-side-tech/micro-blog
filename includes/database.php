@@ -6,75 +6,73 @@ function dbConnect(){
     define("DB_PASSWORD", "123");
     define("DB_NAME", "micro_blog");
 
-    /* 1) Connect to database using SQLI API in PHP*/
-    $dbConnection= mysqli_connect(DB_SERVER,
-                                  DB_USERNAME,
-                                  DB_PASSWORD,
-                                  DB_NAME);
-
-    /* Check if database connection has been established successfully or not*/
-    if(mysqli_connect_errno()){
-            die("Database connection failed:" .
-                    mysqli_connect_error .
-                    "(".mysqli_connect_errno().")");
+    try{
+        $pdo_link = new PDO("mysql:host=".DB_SERVER.";dbname=".DB_NAME,
+                            DB_USERNAME,
+                            DB_PASSWORD);
+        return $pdo_link;
+    }catch (PDOException $exception){
+        die("Connection error!!!".$exception->getMessage());
     }
-    return $dbConnection;
 }
 
-function dbClose($dbConnection){
-    mysqli_close($dbConnection);
+function dbClose($pdo_link){
+    $pdo_link = NULL;
 }
 
-function dbInsertNewMessage($dbConnection,$userId,$newMsg){
+function dbInsertNewMessage($pdo_link,$userId,$newMsg){
     $query  = "INSERT INTO messages ";
     $query .= "(`user_id`, `message_text`) ";
-    $query .= "VALUES (";
-    $query .= $userId.",'{$newMsg}');";
+    $query .= "VALUES (?,?);";
     
-    $result = mysqli_query($dbConnection, $query);
+    $result = $pdo_link->prepare($query);
+    $result->execute(array($userId,$newMsg));
+    
     if(!$result){
         /* Cant insert new message into the database.*/
         die("Database syntax error");
         return -1;
     }else{
-        return mysqli_insert_id($dbConnection);
+        return $pdo_link->lastInsertId();
     }
 }
 
-function dbGetAllMessages($dbConnection){
+function dbGetAllMessages($pdo_link){
     $query  = "SELECT m.message_text,m.time_stamp,u.user_name ";
     $query .="FROM messages AS m INNER JOIN users AS u ";
     $query .="WHERE m.user_id=u.user_id ";
     $query .="ORDER BY m.time_stamp DESC";
     
-    $result = mysqli_query($dbConnection, $query);
+    $result = $pdo_link->query($query);
     if(!$result){
             die("Database query syntax error");
     }
     return $result;
 }
 
-function dbAddusername($dbConnection,$username, $password){
-    $query = "INSERT INTO users (`user_name` , `user_hash`) ";
-    $query .= "VALUES ('{$username}', '{$password}')";	
-    $result = mysqli_query($dbConnection, $query); 
+function dbAddusername($pdo_link,$username, $password){
+    $query = "INSERT INTO users (`user_name` , `user_hash`) VALUES (?, ?)";
+    $result = $pdo_link->prepare($query);
+    
+    $result->execute(array($username,$password));
     if(!$result){
            /* Cant insert new username to the database.*/
            return -1;
     }else{
         /* new username has been inserted successfully into database.
-           return the new id of the iserted username. This id will be saved into session super global array.*/
-        return mysqli_insert_id($dbConnection);
+           return the new id of the inserted username. This id will be saved into session super global array.*/
+        return $pdo_link->lastInsertId();
     }
-    
 }
 
-function isUsernameExist($dbConnection,$username){
-    $query  ="SELECT user_name FROM users ";
-    $query .="WHERE user_name='";
-    $query .= $username."'";
-    $result = mysqli_query($dbConnection, $query);
-    if($result && 0 == mysqli_affected_rows($dbConnection)){ 
+function isUsernameExist($pdo_link,$username){
+    $query  ="SELECT user_name FROM users WHERE user_name = ?";
+    $result = $pdo_link->prepare($query);
+    
+    $result->execute(array($username));
+    /* Check that result is not null and number of affected columns is zero. This indicates that user 
+     already exists.*/
+    if($result && 0 == $result->rowCount()){ 
         /* User does not exist in the database. Next step is to add it to the database.*/
         return FALSE;
     }else{
@@ -84,7 +82,7 @@ function isUsernameExist($dbConnection,$username){
 }
 
 function dbFetchRow($result){
-    return mysqli_fetch_assoc($result);
+    return $result->fetch(PDO::FETCH_ASSOC);
 }
 
 function dbFreeResult($result){
