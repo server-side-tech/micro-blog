@@ -85,6 +85,23 @@ Menu Navigation button. */
     }
 }
 
+.col-3-login{
+    float: left;
+    width: 20%;
+}
+
+.col-3-login:first-child{
+    padding-left: 5%;
+}
+.col-3-login:nth-child(2){
+    width: 60%;
+}
+.col-3-login:last-child{
+    padding-right: 5%;
+}
+.col-3-login p{
+    text-align: left;
+}
 /* Common Form inputs/labels styles
 ===============================================================*/
 label,input{
@@ -158,6 +175,22 @@ header h1{
     top: 50%;
     transform: translateY(-50%);
 }
+
+#login-extra-msg{
+    display: none;
+}
+
+@media (min-width:800px){
+    #login-extra-msg{
+        display: block;
+    }
+}
+
+#login-welcome-msg,
+#login-extra-msg{
+    color: hsl(60, 96%, 65%);
+}
+
 /* Main Section/ Sign-up Section
 ===============================================================*/
 #messages-section,
@@ -206,15 +239,24 @@ footer{
     height: 90px;
     z-index: 10;
 }
+.col-2-msg-send{
+    float: left;
+    width: 75%;
+    margin-left: 5%;
+}
+.col-2-msg-send:last-child{
+    width: 20%;
+    margin-left: 0%;
+    padding-right: 5%;
+}
 
 footer form input[type="text"]{
     width: 90%;
     max-width: 90%;
-    margin-left: 5%;
     
 }
 
 footer form input[type="text"]:focus,
 footer form input[type="text"]:active{
-        outline-color: hsl(60, 96%, 65%);;
+        outline-color: hsl(60, 96%, 65%);
 }

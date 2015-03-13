@@ -7,6 +7,7 @@ function createHead($title){
     <meta name="viewport" content="width=device-width, initial-scale=1.0">
     <title>'.$title.'</title>
     <link rel="stylesheet" href="css/main.css">
+    <script type="text/javascript" src="js/main.js"></script>
 </head>';
 }
 ?>

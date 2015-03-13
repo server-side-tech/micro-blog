@@ -32,10 +32,13 @@ function createLandingForm(){
 
 function createLogoutForm(){
     return '<header class="col-container clearfix">
-                <div class="col-2 vertical-alignment">
+                <div class="col-3-login vertical-alignment">
+                    <p id="login-welcome-msg">Welcome,'.$_SESSION["myName"].'</p><p id="login-extra-msg">You are now logged in</p>'.
+                '</div>
+                <div class="col-3-login vertical-alignment">
                     <h1>Micro Blog</h1>
                 </div>
-                <div class="col-2 vertical-alignment">
+                <div class="col-3-login vertical-alignment">
                             <form name="logout-form" action="index.php" method="post">
                                 <input type="submit" name="logout" value="Log out">
                             </form>                        
@@ -46,11 +49,11 @@ function createLogoutForm(){
 function createSendMessageForm(){
     return '<footer>
                 <form class="vertical-alignment col-container clearfix" name="send-msg-form" action="index.php" method="post">
-                    <div class="col-2 vertical-alignment" >
+                    <div class="col-2-msg-send vertical-alignment" >
                         <input type="text" name="txt-input-msg" required>
                     </div>
-                    <div class="col-2 vertical-alignment" >
-                        <input type="submit" name="send-msg-form" value="Post Message">
+                    <div class="col-2-msg-send vertical-alignment" >
+                        <input type="submit" name="send-msg-form" value="Post">
                     </div>            
                 </form>                        
             </footer>';    
